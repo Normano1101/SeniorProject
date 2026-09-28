@@ -67,6 +67,12 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Economy\CurrencyManager.cs" />
     <Compile Include="Assets\Scripts\Economy\CurrencyDebugPanel.cs" />
+    <Compile Include="Assets\Scripts\Enemy.cs" />
+    <Compile Include="Assets\Scripts\PathManager.cs" />
+    <Compile Include="Assets\Scripts\Tower.cs" />
+    <Compile Include="Assets\Scripts\Projectile.cs" />
+    <Compile Include="Assets\Scripts\EnemySpawner.cs" />
+    <Compile Include="Assets\Scripts\WaveManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
