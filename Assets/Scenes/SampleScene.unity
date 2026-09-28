@@ -174,10 +174,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 149872482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b8035043bf3d7f4087d861c81ff5cba, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dd0d83639324474f8b6b92fbd9d810e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CurrencyManager
-  startingCurrency: 100
+  m_EditorClassIdentifier: Assembly-CSharp::CurrencyDebugPanel
+  addAmount: 10
+  spendAmount: 25
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
