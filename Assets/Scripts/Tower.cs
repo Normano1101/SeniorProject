@@ -1,13 +1,80 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+    private static readonly List<Tower> activeTowers = new();
+
+    public static IReadOnlyList<Tower> ActiveTowers => activeTowers;
+
+    [SerializeField, Min(1)] private int maxHealth = 100;
+
+    private int currentHealth;
     public float range = 5f;
     public float attackSpeed = 1f;
     public int damage = 10;
     public GameObject projectilePrefab;
 
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
+
+    public event Action<Tower, int, int> HealthChanged;
+
     private float attackTimer = 1f;
+
+    private void Awake()
+    {
+        maxHealth = Mathf.Max(1, maxHealth);
+        currentHealth = maxHealth;
+    }
+
+    private void OnEnable()
+    {
+        if (!activeTowers.Contains(this))
+        {
+            activeTowers.Add(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        activeTowers.Remove(this);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (amount <= 0 || currentHealth <= 0)
+        {
+            return;
+        }
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+        HealthChanged?.Invoke(this, currentHealth, maxHealth);
+
+        if (currentHealth == 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public bool TryRepair(int amount, int cost)
+    {
+        if (amount <= 0 || cost < 0 || currentHealth >= maxHealth)
+        {
+            return false;
+        }
+
+        CurrencyManager currencyManager = CurrencyManager.Instance;
+        if (currencyManager == null || !currencyManager.TrySpend(cost))
+        {
+            return false;
+        }
+
+        currentHealth += Mathf.Min(amount, maxHealth - currentHealth);
+        HealthChanged?.Invoke(this, currentHealth, maxHealth);
+        return true;
+    }
 
     void Update()
     {
