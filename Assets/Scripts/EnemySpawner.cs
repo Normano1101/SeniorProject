@@ -7,20 +7,22 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public PathManager pathManager;
 
+    public WaveManager waveManager;
+
     public float spawnInterval = 2f;
     public int enemiesToSpawn = 10;
 
     private List<Vector3> path;
 
-    void Start()
+    void Awake()
     {
         // Get the path once when the level starts
         path = pathManager.GetPath();
 
-        StartCoroutine(SpawnWave());
+        
     }
 
-    IEnumerator SpawnWave()
+    public IEnumerator SpawnWave()
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
@@ -44,10 +46,13 @@ public class EnemySpawner : MonoBehaviour
             Quaternion.identity
         );
 
+        waveManager.EnemySpawned();
+
         Enemy enemy = newEnemy.GetComponent<Enemy>();
 
         if (enemy != null)
         {
+            enemy.waveManager = waveManager;
             enemy.SetPath(path);
         }
     }

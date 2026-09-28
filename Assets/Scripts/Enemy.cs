@@ -5,9 +5,11 @@ public class Enemy : MonoBehaviour
 {
     public int health = 50;
     public float moveSpeed = 1f;
+    public WaveManager waveManager;
 
     private List<Vector3> path;
     private int currentWaypoint = 0;
+    private bool hasBeenRemoved;
 
     public void SetPath(List<Vector3> newPath)
     {
@@ -53,8 +55,7 @@ public class Enemy : MonoBehaviour
     void ReachedEnd()
     {
         // Later you can damage the player's health here
-
-        Destroy(gameObject);
+        RemoveEnemy();
     }
 
     public void TakeDamage(int damage)
@@ -63,7 +64,17 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            RemoveEnemy();
         }
+    }
+
+    void RemoveEnemy()
+    {
+        if (hasBeenRemoved)
+            return;
+
+        hasBeenRemoved = true;
+        waveManager.EnemyRemoved();
+        Destroy(gameObject);
     }
 }
