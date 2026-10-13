@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class Enemy : MonoBehaviour
 {
     public int health = 50;
     public float moveSpeed = 1f;
+    public int baseDamage = 10;
+
     public WaveManager waveManager;
 
     private List<Vector3> path;
@@ -54,12 +57,27 @@ public class Enemy : MonoBehaviour
 
     void ReachedEnd()
     {
-        // Later you can damage the player's health here
+        if (hasBeenRemoved)
+            return;
+
+        // Find the player's health system
+        PlayerHealth playerHealth =
+            FindFirstObjectByType<PlayerHealth>();
+
+        // Damage the base when the enemy reaches the end
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(baseDamage);
+        }
+
         RemoveEnemy();
     }
 
     public void TakeDamage(int damage)
     {
+        if (hasBeenRemoved)
+            return;
+
         health -= damage;
 
         if (health <= 0)
@@ -74,7 +92,12 @@ public class Enemy : MonoBehaviour
             return;
 
         hasBeenRemoved = true;
-        waveManager.EnemyRemoved();
+
+        if (waveManager != null)
+        {
+            waveManager.EnemyRemoved();
+        }
+
         Destroy(gameObject);
     }
 }

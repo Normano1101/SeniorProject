@@ -105,5 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 116b843d3d3164d0ab0e0a9f731c4846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  health: 50
+  health: 100
   moveSpeed: 1
+  baseDamage: 10
+  waveManager: {fileID: 0}
