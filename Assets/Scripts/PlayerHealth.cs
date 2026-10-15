@@ -37,11 +37,21 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         UpdateHealthUI();
+        Debug.Log("CURRENT HEALTH: " + currentHealth);
 
         if (currentHealth <= 0)
         {
             Die();
         }
+    }
+
+    public void LoadHealth(int savedHealth)
+    {
+        currentHealth = Mathf.Clamp(savedHealth, 0, maxHealth);
+
+        UpdateHealthUI();
+
+        Debug.Log("Player health restored: " + currentHealth);
     }
 
     void UpdateHealthUI()
