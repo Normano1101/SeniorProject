@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class TowerDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public GameObject towerPrefab;
+    public TowerManager towerManager;
 
     private GameObject draggedTower;
 
@@ -45,6 +46,16 @@ public class TowerDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         if (tower != null)
         {
             tower.enabled = true;
+        }
+
+        // Register the tower so it can be saved
+        if (towerManager != null)
+        {
+            towerManager.RegisterTower(draggedTower);
+        }
+        else
+        {
+            Debug.LogError("TowerManager reference is missing!");
         }
 
         Debug.Log("Placed tower!");

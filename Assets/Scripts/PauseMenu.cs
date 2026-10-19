@@ -4,10 +4,23 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    private static bool pauseAfterReload;
+
     public GameObject pauseMenuUI;
 
     private bool isPaused = false;
     private bool gameIsOver = false;
+
+    void Awake()
+    {
+        if (!pauseAfterReload)
+            return;
+
+        pauseAfterReload = false;
+        isPaused = true;
+        Time.timeScale = 0f;
+        pauseMenuUI.SetActive(true);
+    }
 
     void Update()
     {
@@ -45,7 +58,8 @@ public class PauseMenu : MonoBehaviour
 
     public void Restart()
     {
-        Time.timeScale = 1f;
+        pauseAfterReload = true;
+        Time.timeScale = 0f;
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().name
         );
