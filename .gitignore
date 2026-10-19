@@ -16,3 +16,7 @@
 
 # Unity crash reports
 sysinfo.txt
+
+backend/node_modules/
+backend/game.db
+backend/game.db-*
