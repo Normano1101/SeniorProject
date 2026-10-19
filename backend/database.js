@@ -27,4 +27,26 @@ db.exec(`
         ON DELETE CASCADE
     );
 `);
+
+// Check which columns already exist in GameSaves
+const columns = db
+    .prepare("PRAGMA table_info(GameSaves)")
+    .all()
+    .map(column => column.name);
+
+// Add spawning progress if it doesn't exist
+if (!columns.includes("enemies_spawned")) {
+    db.exec(`
+        ALTER TABLE GameSaves
+        ADD COLUMN enemies_spawned INTEGER DEFAULT 0
+    `);
+}
+
+// Add enemy data if it doesn't exist
+if (!columns.includes("enemies")) {
+    db.exec(`
+        ALTER TABLE GameSaves
+        ADD COLUMN enemies TEXT DEFAULT '[]'
+    `);
+}
 module.exports = db;
