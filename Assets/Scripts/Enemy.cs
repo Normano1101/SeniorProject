@@ -2,6 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
+public class EnemySaveData
+{
+    public float x;
+    public float y;
+    public int health;
+    public int waypoint;
+}
+
 public class Enemy : MonoBehaviour
 {
     public int health = 50;
@@ -26,6 +36,42 @@ public class Enemy : MonoBehaviour
             // First target will be the second tile
             currentWaypoint = 1;
         }
+    }
+
+    public EnemySaveData GetSaveData()
+    {
+        return new EnemySaveData
+        {
+            x = transform.position.x,
+            y = transform.position.y,
+            health = health,
+            waypoint = currentWaypoint
+        };
+    }
+
+    public void LoadSaveData(EnemySaveData data)
+    {
+        if (data == null)
+        {
+            Debug.LogError("Enemy save data is missing.");
+            return;
+        }
+
+        health = data.health;
+
+        transform.position = new Vector3(
+            data.x,
+            data.y,
+            transform.position.z
+        );
+
+        currentWaypoint = Mathf.Clamp(
+            data.waypoint,
+            0,
+            path != null ? path.Count : 0
+        );
+
+        hasBeenRemoved = false;
     }
 
     void Update()
