@@ -9,6 +9,20 @@ public class TowerManager : MonoBehaviour
 
     private readonly List<GameObject> placedTowers = new List<GameObject>();
 
+    public Sprite TowerSprite
+    {
+        get
+        {
+            if (basicTowerPrefab == null)
+            {
+                return null;
+            }
+
+            SpriteRenderer spriteRenderer = basicTowerPrefab.GetComponent<SpriteRenderer>();
+            return spriteRenderer != null ? spriteRenderer.sprite : null;
+        }
+    }
+
     private void Awake()
     {
         if (pathManager == null)
@@ -18,7 +32,7 @@ public class TowerManager : MonoBehaviour
 
         foreach (Tower tower in FindObjectsByType<Tower>())
         {
-            RegisterTower(tower.gameObject);
+            Destroy(tower.gameObject);
         }
     }
 
