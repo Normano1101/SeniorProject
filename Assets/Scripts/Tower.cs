@@ -1,13 +1,34 @@
 using UnityEngine;
+[System.Serializable]
+public class TowerSaveData
+{
+    public string tower_type;
+    public float position_x;
+    public float position_y;
+    public int level;
+}
 
 public class Tower : MonoBehaviour
 {
+    public string towerType = "BasicTower";
+    public int level = 1;
     public float range = 5f;
     public float attackSpeed = 1f;
     public int damage = 10;
     public GameObject projectilePrefab;
 
     private float attackTimer = 1f;
+
+    public TowerSaveData GetSaveData()
+    {
+        return new TowerSaveData
+        {
+            tower_type = towerType,
+            position_x = transform.position.x,
+            position_y = transform.position.y,
+            level = level
+        };
+    }
 
     void Update()
     {
@@ -45,7 +66,7 @@ public class Tower : MonoBehaviour
                 }
 
                 // Fire visual projectile
-                Debug.Log("ATTEMPTING TO FIRE PROJECTILE");
+                // Debug.Log("ATTEMPTING TO FIRE PROJECTILE");
 
                 if (projectilePrefab != null)
                 {
@@ -55,7 +76,7 @@ public class Tower : MonoBehaviour
                         Quaternion.identity
                     );
 
-                    Debug.Log("PROJECTILE FIRED!");
+                    // Debug.Log("PROJECTILE FIRED!");
 
                     Projectile projectileScript =
                         projectile.GetComponent<Projectile>();
