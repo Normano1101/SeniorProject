@@ -24,6 +24,14 @@ public class CurrencyManager : MonoBehaviour
         CurrencyChanged?.Invoke(CurrentCurrency);
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     public bool CanAfford(int amount)
     {
         return amount >= 0 && CurrentCurrency >= amount;
@@ -50,5 +58,16 @@ public class CurrencyManager : MonoBehaviour
 
         CurrentCurrency += amount;
         CurrencyChanged?.Invoke(CurrentCurrency);
+    }
+
+    public void SetCurrency(int amount)
+    {
+        CurrentCurrency = Mathf.Max(0, amount);
+        CurrencyChanged?.Invoke(CurrentCurrency);
+    }
+
+    public void ResetCurrency()
+    {
+        SetCurrency(startingCurrency);
     }
 }

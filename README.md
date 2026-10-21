@@ -38,4 +38,18 @@ The team will use GitHub for version control and collaboration. Development will
 
 ## Project Status
 
-Currently setting up the project and development environment.
+An early playable prototype is available in the `Map1` scene.
+
+## Current Playable Prototype
+
+The `Map1` scene includes a replayable tower-defense loop:
+
+* Start with $200, enough to choose tower1 or tower2 but not tower3.
+* Defeating enemies awards currency; enemies that reach the base do not.
+* Buy tower1 ($100), tower2 ($160), and tower3 ($220) from the on-screen shop.
+* Click an open tile to place the selected tower. Path tiles and occupied spots are blocked; press Esc or right-click to cancel.
+* Runners arrive from wave 2 and tougher Heavy enemies from wave 3. Their speed, health, damage, and rewards differ.
+* Waves grow over time. Start the next wave early for a small currency bonus, or use the intermission to build.
+* The run ends when base health reaches zero. Restarting begins with the starting currency again.
+
+Tower, enemy, health, wave, and currency data are included in the existing save/load flow.

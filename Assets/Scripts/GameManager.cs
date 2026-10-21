@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
         gameIsOver = true;
 
         PauseMenu pauseManager =
-            FindFirstObjectByType<PauseMenu>();
+            FindAnyObjectByType<PauseMenu>();
 
         if (pauseManager != null)
         {
@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        if (CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.ResetCurrency();
+        }
 
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().buildIndex

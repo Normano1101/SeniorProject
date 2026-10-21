@@ -54,13 +54,19 @@ public class GameAPI : MonoBehaviour
             return;
         }
 
+        if (CurrencyManager.Instance == null)
+        {
+            Debug.LogError("GameAPI: CurrencyManager reference is missing.");
+            return;
+        }
+
         GameSaveData data = new GameSaveData
         {
             save_id = PlayerPrefs.GetInt("LastSaveId", 0),
             player_name = "UnityPlayer",
             current_wave = waveManager.currentWave,
             player_health = playerHealth.currentHealth,
-            currency = 0,
+            currency = CurrencyManager.Instance.CurrentCurrency,
             difficulty = 1.0f,
 
             enemies_spawned = waveManager.enemySpawner.enemiesSpawned,
@@ -154,6 +160,12 @@ public class GameAPI : MonoBehaviour
                     yield break;
                 }
 
+                if (CurrencyManager.Instance == null)
+                {
+                    Debug.LogError("GameAPI: CurrencyManager reference is missing.");
+                    yield break;
+                }
+
                 waveManager.RestoreWave(
                 data.current_wave,
                 data.enemies_spawned,
@@ -163,6 +175,7 @@ public class GameAPI : MonoBehaviour
             );
 
             playerHealth.LoadHealth(data.player_health);
+            CurrencyManager.Instance.SetCurrency(data.currency);
            
             Debug.Log("Towers received from database: " +
                 (data.towers == null ? "NULL" : data.towers.Length.ToString()));

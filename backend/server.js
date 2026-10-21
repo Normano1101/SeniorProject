@@ -3,6 +3,8 @@ const db = require("./database");
 
 const app = express();
 const PORT = 3000;
+const allowedEnemyTypes = new Set(["Basic", "Runner", "Heavy"]);
+const allowedTowerTypes = new Set(["BasicTower", "RapidTower", "CannonTower"]);
 
 // Allow API to receive JSON
 app.use(express.json());
@@ -55,13 +57,15 @@ app.post("/api/save", (req, res) => {
             Number.isSafeInteger(enemy.health) &&
             enemy.health > 0 &&
             Number.isSafeInteger(enemy.waypoint) &&
-            enemy.waypoint >= 0
+            enemy.waypoint >= 0 &&
+            (enemy.enemy_type === undefined ||
+                allowedEnemyTypes.has(enemy.enemy_type))
             ) ||
             !Array.isArray(towers) ||
             !towers.every(tower =>
                 tower !== null &&
                 typeof tower === "object" &&
-                tower.tower_type === "BasicTower" &&
+                allowedTowerTypes.has(tower.tower_type) &&
                 Number.isFinite(tower.position_x) &&
                 Number.isFinite(tower.position_y) &&
                 Number.isSafeInteger(tower.level) &&
