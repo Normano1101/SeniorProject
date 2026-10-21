@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -24,15 +23,13 @@ public class PlayerHealth : MonoBehaviour
             healthSlider.value = currentHealth;
         }
     }
-    void Update()
-    {
-        if (Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame)
-        {
-            TakeDamage(10);
-        }
-    }
     public void TakeDamage(int damage)
     {
+        if (damage <= 0 || currentHealth <= 0)
+        {
+            return;
+        }
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 

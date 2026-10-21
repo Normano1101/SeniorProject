@@ -7,17 +7,55 @@ public class WaveManager : MonoBehaviour
     public int enemiesRemaining = 0;
     public EnemySpawner enemySpawner;
 
+    [SerializeField] private float intermissionDuration = 10f;
+    [SerializeField] private int earlyStartBonus = 20;
+
     private Coroutine waveCoroutine;
     private bool isSpawning = false;
+    private bool isIntermission;
+    private float intermissionRemaining;
+
+    public float IntermissionRemaining => intermissionRemaining;
+    public bool IsSpawning => isSpawning;
+    public bool IsIntermission => isIntermission;
 
     void Start()
     {
+        if (enemySpawner == null)
+        {
+            Debug.LogError("WaveManager requires an EnemySpawner.");
+            enabled = false;
+            return;
+        }
+
+        enemiesRemaining = 0;
         enemySpawner.waveManager = this;
         StartWave();
     }
 
+    void Update()
+    {
+        if (!isIntermission)
+        {
+            return;
+        }
+
+        intermissionRemaining -= Time.deltaTime;
+        if (intermissionRemaining <= 0f)
+        {
+            isIntermission = false;
+            currentWave++;
+            StartWave();
+        }
+    }
+
     public void StartWave()
     {
+        if (enemySpawner == null || isSpawning || enemiesRemaining > 0)
+        {
+            return;
+        }
+
         // Stop the previous spawning process
         if (waveCoroutine != null)
         {
@@ -31,7 +69,16 @@ public class WaveManager : MonoBehaviour
         // Reset counters
         enemiesRemaining = 0;
         enemySpawner.enemiesSpawned = 0;
+        enemySpawner.PrepareWave(currentWave);
+        isIntermission = false;
         isSpawning = true;
+
+        if (!enemySpawner.HasValidPath)
+        {
+            isSpawning = false;
+            Debug.LogError("Wave cannot start because the enemy path is incomplete.");
+            return;
+        }
 
         Debug.Log("Starting wave: " + currentWave);
 
@@ -71,6 +118,25 @@ public class WaveManager : MonoBehaviour
         StartWave();
     }
 
+    public void StartNextWaveEarly()
+    {
+        if (!isIntermission)
+        {
+            return;
+        }
+
+        bool earnsBonus = intermissionRemaining > 1f;
+        isIntermission = false;
+        currentWave++;
+
+        if (earnsBonus && CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.AddCurrency(earlyStartBonus);
+        }
+
+        StartWave();
+    }
+
     public void RestoreWave(
         int savedWave,
         int savedSpawnedCount,
@@ -85,6 +151,8 @@ public class WaveManager : MonoBehaviour
 
         // Restore wave number.
         currentWave = Mathf.Max(1, savedWave);
+        isIntermission = false;
+        enemySpawner.PrepareWave(currentWave);
 
         // Restore spawned count.
         enemySpawner.enemiesSpawned = Mathf.Clamp(
@@ -94,7 +162,7 @@ public class WaveManager : MonoBehaviour
         );
 
         // Restore enemies at saved positions.
-        enemySpawner.RestoreEnemies(savedEnemies);
+        enemySpawner.RestoreEnemies(savedEnemies, currentWave);
 
         // Restore number of living enemies.
         enemiesRemaining = savedEnemies != null
@@ -136,11 +204,11 @@ public class WaveManager : MonoBehaviour
 
     private void CheckWaveComplete()
     {
-        if (!isSpawning && enemiesRemaining == 0)
+        if (!isSpawning && enemiesRemaining == 0 && !isIntermission)
         {
             Debug.Log("Wave " + currentWave + " complete!");
-
-            currentWave++;
+            isIntermission = true;
+            intermissionRemaining = intermissionDuration;
         }
     }
 }

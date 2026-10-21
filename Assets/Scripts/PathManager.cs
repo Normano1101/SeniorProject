@@ -6,6 +6,12 @@ public class PathManager : MonoBehaviour
 {
     public Tilemap pathTilemap;
 
+    public bool IsPathPosition(Vector3 worldPosition)
+    {
+        return pathTilemap != null &&
+            pathTilemap.HasTile(pathTilemap.WorldToCell(worldPosition));
+    }
+
     public List<Vector3> GetPath()
     {
         List<Vector3> path = new List<Vector3>();
