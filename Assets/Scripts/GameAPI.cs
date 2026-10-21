@@ -48,9 +48,18 @@ public class GameAPI : MonoBehaviour
     // Called by the Save button in the pause menu.
     public void SaveCurrentGame()
     {
-        if (waveManager == null || playerHealth == null || towerManager == null)
+        if (waveManager == null || waveManager.enemySpawner == null ||
+            playerHealth == null || towerManager == null)
         {
-            Debug.LogError("GameAPI: Missing WaveManager, PlayerHealth, or TowerManager reference.");
+            Debug.LogError(
+                "GameAPI: Missing WaveManager, EnemySpawner, PlayerHealth, or TowerManager reference."
+            );
+            return;
+        }
+
+        if (CurrencyManager.Instance == null)
+        {
+            Debug.LogError("GameAPI: CurrencyManager reference is missing.");
             return;
         }
 
@@ -60,7 +69,7 @@ public class GameAPI : MonoBehaviour
             player_name = "UnityPlayer",
             current_wave = waveManager.currentWave,
             player_health = playerHealth.currentHealth,
-            currency = 0,
+            currency = CurrencyManager.Instance.CurrentCurrency,
             difficulty = 1.0f,
 
             enemies_spawned = waveManager.enemySpawner.enemiesSpawned,
@@ -148,30 +157,46 @@ public class GameAPI : MonoBehaviour
                         request.downloadHandler.text
                     );
 
-                if (waveManager == null || playerHealth == null || towerManager == null)
+                if (data == null)
                 {
-                    Debug.LogError("GameAPI: Missing manager references.");
+                    Debug.LogError("GameAPI: Save response could not be parsed.");
+                    yield break;
+                }
+
+                if (waveManager == null || waveManager.enemySpawner == null ||
+                    playerHealth == null || towerManager == null)
+                {
+                    Debug.LogError(
+                        "GameAPI: Missing WaveManager, EnemySpawner, PlayerHealth, or TowerManager reference."
+                    );
+                    yield break;
+                }
+
+                if (CurrencyManager.Instance == null)
+                {
+                    Debug.LogError("GameAPI: CurrencyManager reference is missing.");
                     yield break;
                 }
 
                 waveManager.RestoreWave(
-                data.current_wave,
-                data.enemies_spawned,
-                new System.Collections.Generic.List<EnemySaveData>(
-                    data.enemies ?? Array.Empty<EnemySaveData>()
-                )
-            );
+                    data.current_wave,
+                    data.enemies_spawned,
+                    new System.Collections.Generic.List<EnemySaveData>(
+                        data.enemies ?? Array.Empty<EnemySaveData>()
+                    )
+                );
 
-            playerHealth.LoadHealth(data.player_health);
+                playerHealth.LoadHealth(data.player_health);
+                CurrencyManager.Instance.SetCurrency(data.currency);
 
-            Debug.Log("Towers received from database: " +
-                (data.towers == null ? "NULL" : data.towers.Length.ToString()));
+                Debug.Log("Towers received from database: " +
+                    (data.towers == null ? "NULL" : data.towers.Length.ToString()));
 
-            towerManager.RestoreTowers(
-                data.towers ?? Array.Empty<TowerSaveData>()
-            );
-            Debug.Log("Loaded wave: " + data.current_wave);
-            Debug.Log("Loaded health: " + data.player_health);
+                towerManager.RestoreTowers(
+                    data.towers ?? Array.Empty<TowerSaveData>()
+                );
+                Debug.Log("Loaded wave: " + data.current_wave);
+                Debug.Log("Loaded health: " + data.player_health);
             }
             else
             {

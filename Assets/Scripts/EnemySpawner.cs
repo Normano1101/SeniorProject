@@ -13,13 +13,30 @@ public class EnemySpawner : MonoBehaviour
     public int enemiesSpawned = 0;
 
     private List<Vector3> path;
+    private int baseEnemiesToSpawn;
 
     // Keep track of enemies created by this spawner.
     private readonly List<GameObject> spawnedEnemies = new List<GameObject>();
 
     void Awake()
     {
+        baseEnemiesToSpawn = Mathf.Max(1, enemiesToSpawn);
+
+        if (pathManager == null || pathManager.pathTilemap == null)
+        {
+            Debug.LogError("EnemySpawner requires a PathManager with a path tilemap.");
+            path = new List<Vector3>();
+            return;
+        }
+
         path = pathManager.GetPath();
+    }
+
+    public bool HasValidPath => path != null && path.Count > 1;
+
+    public void PrepareWave(int wave)
+    {
+        enemiesToSpawn = baseEnemiesToSpawn + Mathf.Max(0, wave - 1) * 2;
     }
 
     public IEnumerator SpawnWave()
@@ -31,9 +48,18 @@ public class EnemySpawner : MonoBehaviour
 
     public IEnumerator SpawnRemainingEnemies()
     {
+        if (waveManager == null)
+        {
+            Debug.LogError("EnemySpawner requires a WaveManager.");
+            yield break;
+        }
+
         while (enemiesSpawned < enemiesToSpawn)
         {
-            SpawnEnemy();
+            if (!SpawnEnemy(ChooseEnemyKind(enemiesSpawned, waveManager.currentWave)))
+            {
+                yield break;
+            }
 
             enemiesSpawned++;
 
@@ -41,12 +67,27 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    void SpawnEnemy()
+    private EnemyKind ChooseEnemyKind(int spawnIndex, int wave)
     {
-        if (path == null || path.Count == 0)
+        if (wave >= 3 && spawnIndex % 5 == 4)
         {
-            Debug.LogError("No path was found!");
-            return;
+            return EnemyKind.Heavy;
+        }
+
+        if (wave >= 2 && spawnIndex % 3 == 2)
+        {
+            return EnemyKind.Runner;
+        }
+
+        return EnemyKind.Basic;
+    }
+
+    private bool SpawnEnemy(EnemyKind kind)
+    {
+        if (!HasValidPath || enemyPrefab == null || waveManager == null)
+        {
+            Debug.LogError("EnemySpawner is missing its path, enemy prefab, or wave manager.");
+            return false;
         }
 
         GameObject newEnemy = Instantiate(
@@ -57,15 +98,24 @@ public class EnemySpawner : MonoBehaviour
 
         spawnedEnemies.Add(newEnemy);
 
-        waveManager.EnemySpawned();
-
         Enemy enemy = newEnemy.GetComponent<Enemy>();
 
         if (enemy != null)
         {
             enemy.waveManager = waveManager;
+            enemy.Configure(kind, waveManager.currentWave);
             enemy.SetPath(path);
+            waveManager.EnemySpawned();
         }
+        else
+        {
+            Debug.LogError("The enemy prefab has no Enemy component.");
+            Destroy(newEnemy);
+            spawnedEnemies.Remove(newEnemy);
+            return false;
+        }
+
+        return true;
     }
 
     public List<EnemySaveData> GetEnemiesSaveData()
@@ -87,7 +137,7 @@ public class EnemySpawner : MonoBehaviour
 
         return enemies;
     }
-    public void RestoreEnemies(List<EnemySaveData> savedEnemies)
+    public void RestoreEnemies(List<EnemySaveData> savedEnemies, int wave)
     {
         // Remove enemies currently on the map
         ClearEnemies();
@@ -97,6 +147,18 @@ public class EnemySpawner : MonoBehaviour
 
         foreach (EnemySaveData data in savedEnemies)
         {
+            if (data == null)
+            {
+                Debug.LogWarning("Skipping an empty enemy save entry.");
+                continue;
+            }
+
+            if (!HasValidPath || enemyPrefab == null)
+            {
+                Debug.LogError("Cannot restore enemies without a valid path and enemy prefab.");
+                return;
+            }
+
             GameObject newEnemy = Instantiate(
                 enemyPrefab,
                 path[0],
@@ -113,11 +175,19 @@ public class EnemySpawner : MonoBehaviour
 
                 // Set the path before restoring the saved position
                 enemy.SetPath(path);
-                enemy.LoadSaveData(data);
+                enemy.LoadSaveData(data, wave);
             }
         }
 
         Debug.Log("Restored " + savedEnemies.Count + " enemies.");
+    }
+
+    public void RestoreEnemies(List<EnemySaveData> savedEnemies)
+    {
+        RestoreEnemies(
+            savedEnemies,
+            waveManager != null ? waveManager.currentWave : 1
+        );
     }
 
     // Remove enemies from the previous wave before loading.

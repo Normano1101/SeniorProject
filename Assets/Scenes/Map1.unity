@@ -1353,7 +1353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveManager
   currentWave: 1
-  enemiesRemaining: 10
+  enemiesRemaining: 0
   enemySpawner: {fileID: 1130299109}
 --- !u!4 &388960845
 Transform:
@@ -3983,7 +3983,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &634309285
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4098,7 +4098,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerDrag
   towerPrefab: {fileID: 1262625237871090779, guid: a07a75d6558bc479981e005032cd44c8, type: 3}
-  towerManager: {fileID: 0}
+  towerManager: {fileID: 851143291}
 --- !u!1 &746589826
 GameObject:
   m_ObjectHideFlags: 0
@@ -4379,6 +4379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerManager
   basicTowerPrefab: {fileID: 4321703843082668740, guid: e9d4a7303cbca44bf9ff8508f7bd6a95, type: 3}
+  pathManager: {fileID: 100202477}
 --- !u!4 &851143292
 Transform:
   m_ObjectHideFlags: 0
@@ -5559,6 +5560,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1293198065}
   - component: {fileID: 1293198064}
+  - component: {fileID: 1800000000}
+  - component: {fileID: 1800000002}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5579,6 +5582,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   gameOverMenu: {fileID: 419392401}
+--- !u!114 &1800000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293198063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8035043bf3d7f4087d861c81ff5cba, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::CurrencyManager
+  startingCurrency: 200
+--- !u!114 &1800000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293198063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d8c4ce874f746d7ae13d19d77e86021, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TowerShop
+  towerManager: {fileID: 851143291}
+  pathManager: {fileID: 100202477}
+  waveManager: {fileID: 388960844}
+  playerHealth: {fileID: 1453630417}
 --- !u!4 &1293198065
 Transform:
   m_ObjectHideFlags: 0
