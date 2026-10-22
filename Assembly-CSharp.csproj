@@ -60,21 +60,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\Tools\BuildPipeline\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\Tools\BuildPipeline\Unity.Analyzers.Common\Unity.Analyzers.Common.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\Tools\BuildPipeline\Unity.Analyzers.LongLiving\Unity.Analyzers.LongLiving.dll" />
-    <Analyzer Include="C:\Users\GMO\OneDrive\Documents\senior_Project\SeniorProject\Library\PackageCache\com.unity.pipeline@ab05e9cd7f74\Runtime\Analyzers\IlInterpreterAnalyzer.dll" />
+    <Analyzer Include="C:\Users\marka\Unity\SeniorProject\Library\PackageCache\com.unity.pipeline@ab05e9cd7f74\Runtime\Analyzers\IlInterpreterAnalyzer.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\Microsoft.Extensions.Logging.Generators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\System.Text.Json.SourceGeneration.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\TowerDrag.cs" />
-    <Compile Include="Assets\Scripts\Economy\CurrencyManager.cs" />
     <Compile Include="Assets\Scripts\PlayerHealth.cs" />
-    <Compile Include="Assets\Scripts\TowerShop.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\Economy\CurrencyDebugPanel.cs" />
     <Compile Include="Assets\Scripts\WaveManager.cs" />
-    <Compile Include="Assets\Scripts\GameAPI.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
-    <Compile Include="Assets\Scripts\Tower Manager.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\PathManager.cs" />
     <Compile Include="Assets\Scripts\Tower.cs" />

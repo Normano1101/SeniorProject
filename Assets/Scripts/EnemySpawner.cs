@@ -22,9 +22,9 @@ public class EnemySpawner : MonoBehaviour
     {
         baseEnemiesToSpawn = Mathf.Max(1, enemiesToSpawn);
 
-        if (pathManager == null)
+        if (pathManager == null || pathManager.pathTilemap == null)
         {
-            Debug.LogError("EnemySpawner requires a PathManager.");
+            Debug.LogError("EnemySpawner requires a PathManager with a path tilemap.");
             path = new List<Vector3>();
             return;
         }
@@ -48,6 +48,12 @@ public class EnemySpawner : MonoBehaviour
 
     public IEnumerator SpawnRemainingEnemies()
     {
+        if (waveManager == null)
+        {
+            Debug.LogError("EnemySpawner requires a WaveManager.");
+            yield break;
+        }
+
         while (enemiesSpawned < enemiesToSpawn)
         {
             if (!SpawnEnemy(ChooseEnemyKind(enemiesSpawned, waveManager.currentWave)))
@@ -174,6 +180,14 @@ public class EnemySpawner : MonoBehaviour
         }
 
         Debug.Log("Restored " + savedEnemies.Count + " enemies.");
+    }
+
+    public void RestoreEnemies(List<EnemySaveData> savedEnemies)
+    {
+        RestoreEnemies(
+            savedEnemies,
+            waveManager != null ? waveManager.currentWave : 1
+        );
     }
 
     // Remove enemies from the previous wave before loading.

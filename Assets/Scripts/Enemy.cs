@@ -121,7 +121,6 @@ public class Enemy : MonoBehaviour
         {
             savedKind = EnemyKind.Basic;
         }
-
         Configure(savedKind, wave);
         health = Mathf.Max(1, data.health);
 
@@ -138,6 +137,11 @@ public class Enemy : MonoBehaviour
         );
 
         hasBeenRemoved = false;
+    }
+
+    public void LoadSaveData(EnemySaveData data)
+    {
+        LoadSaveData(data, waveManager != null ? waveManager.currentWave : 1);
     }
 
     void Update()
