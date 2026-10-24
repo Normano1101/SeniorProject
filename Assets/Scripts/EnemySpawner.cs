@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,8 @@ public class EnemySpawner : MonoBehaviour
     private int baseEnemiesToSpawn;
 
     // Keep track of enemies created by this spawner.
-    private readonly List<GameObject> spawnedEnemies = new List<GameObject>();
+    private readonly List<GameObject> spawnedEnemies =
+        new List<GameObject>();
 
     void Awake()
     {
@@ -36,7 +38,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void PrepareWave(int wave)
     {
-        enemiesToSpawn = baseEnemiesToSpawn + Mathf.Max(0, wave - 1) * 2;
+        enemiesToSpawn =
+            baseEnemiesToSpawn + Mathf.Max(0, wave - 1) * 2;
     }
 
     public IEnumerator SpawnWave()
@@ -50,7 +53,12 @@ public class EnemySpawner : MonoBehaviour
     {
         while (enemiesSpawned < enemiesToSpawn)
         {
-            if (!SpawnEnemy(ChooseEnemyKind(enemiesSpawned, waveManager.currentWave)))
+            EnemyKind kind = ChooseEnemyKind(
+                enemiesSpawned,
+                waveManager.currentWave
+            );
+
+            if (!SpawnEnemy(kind))
             {
                 yield break;
             }
@@ -63,16 +71,25 @@ public class EnemySpawner : MonoBehaviour
 
     private EnemyKind ChooseEnemyKind(int spawnIndex, int wave)
     {
+        // Add tower attackers starting in wave 4.
+        if (wave >= 4 && spawnIndex % 6 == 5)
+        {
+            return EnemyKind.TowerAttacker;
+        }
+
+        // Add heavy enemies starting in wave 3.
         if (wave >= 3 && spawnIndex % 5 == 4)
         {
             return EnemyKind.Heavy;
         }
 
+        // Add runner enemies starting in wave 2.
         if (wave >= 2 && spawnIndex % 3 == 2)
         {
             return EnemyKind.Runner;
         }
 
+        // Default enemy type.
         return EnemyKind.Basic;
     }
 
@@ -80,7 +97,10 @@ public class EnemySpawner : MonoBehaviour
     {
         if (!HasValidPath || enemyPrefab == null || waveManager == null)
         {
-            Debug.LogError("EnemySpawner is missing its path, enemy prefab, or wave manager.");
+            Debug.LogError(
+                "EnemySpawner is missing its path, enemy prefab, or wave manager."
+            );
+
             return false;
         }
 
@@ -99,13 +119,16 @@ public class EnemySpawner : MonoBehaviour
             enemy.waveManager = waveManager;
             enemy.Configure(kind, waveManager.currentWave);
             enemy.SetPath(path);
+
             waveManager.EnemySpawned();
         }
         else
         {
             Debug.LogError("The enemy prefab has no Enemy component.");
+
             Destroy(newEnemy);
             spawnedEnemies.Remove(newEnemy);
+
             return false;
         }
 
@@ -119,7 +142,9 @@ public class EnemySpawner : MonoBehaviour
         foreach (GameObject enemyObject in spawnedEnemies)
         {
             if (enemyObject == null || !enemyObject.activeInHierarchy)
+            {
                 continue;
+            }
 
             Enemy enemy = enemyObject.GetComponent<Enemy>();
 
@@ -131,25 +156,37 @@ public class EnemySpawner : MonoBehaviour
 
         return enemies;
     }
-    public void RestoreEnemies(List<EnemySaveData> savedEnemies, int wave)
+
+    public void RestoreEnemies(
+        List<EnemySaveData> savedEnemies,
+        int wave
+    )
     {
-        // Remove enemies currently on the map
+        // Remove enemies currently on the map.
         ClearEnemies();
 
         if (savedEnemies == null)
+        {
             return;
+        }
 
         foreach (EnemySaveData data in savedEnemies)
         {
             if (data == null)
             {
-                Debug.LogWarning("Skipping an empty enemy save entry.");
+                Debug.LogWarning(
+                    "Skipping an empty enemy save entry."
+                );
+
                 continue;
             }
 
             if (!HasValidPath || enemyPrefab == null)
             {
-                Debug.LogError("Cannot restore enemies without a valid path and enemy prefab.");
+                Debug.LogError(
+                    "Cannot restore enemies without a valid path and enemy prefab."
+                );
+
                 return;
             }
 
@@ -167,9 +204,15 @@ public class EnemySpawner : MonoBehaviour
             {
                 enemy.waveManager = waveManager;
 
-                // Set the path before restoring the saved position
+                // Set the path before restoring the saved position.
                 enemy.SetPath(path);
                 enemy.LoadSaveData(data, wave);
+            }
+            else
+            {
+                Debug.LogError(
+                    "The enemy prefab has no Enemy component."
+                );
             }
         }
 
