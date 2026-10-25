@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public enum TowerKind
@@ -27,10 +28,32 @@ public class Tower : MonoBehaviour
     public int damage = 10;
     public GameObject projectilePrefab;
 
+    // Tower health
+    public int maxHealth = 100;
+    public int currentHealth = 100;
+
     private float splashRadius;
     private float attackTimer = 1f;
 
     public int Cost => cost;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void Configure(TowerKind kind)
     {
@@ -45,11 +68,13 @@ public class Tower : MonoBehaviour
                 attackSpeed = 2.5f;
                 damage = 8;
                 splashRadius = 0f;
+
                 if (sprite != null)
                 {
                     sprite.color = new Color(0.45f, 0.85f, 1f);
                 }
                 break;
+
             case TowerKind.Cannon:
                 towerType = "CannonTower";
                 cost = 220;
@@ -57,11 +82,13 @@ public class Tower : MonoBehaviour
                 attackSpeed = 0.65f;
                 damage = 32;
                 splashRadius = 0.8f;
+
                 if (sprite != null)
                 {
                     sprite.color = new Color(1f, 0.65f, 0.35f);
                 }
                 break;
+
             default:
                 towerType = "BasicTower";
                 cost = 100;
@@ -69,12 +96,15 @@ public class Tower : MonoBehaviour
                 attackSpeed = 1f;
                 damage = 15;
                 splashRadius = 0f;
+
                 if (sprite != null)
                 {
                     sprite.color = Color.white;
                 }
                 break;
         }
+
+        currentHealth = maxHealth;
     }
 
     public static int GetCost(TowerKind kind)
@@ -83,8 +113,10 @@ public class Tower : MonoBehaviour
         {
             case TowerKind.Rapid:
                 return 160;
+
             case TowerKind.Cannon:
                 return 220;
+
             default:
                 return 100;
         }
@@ -103,7 +135,9 @@ public class Tower : MonoBehaviour
 
     void Update()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] enemies =
+            GameObject.FindGameObjectsWithTag("Enemy");
+
         GameObject closestEnemy = null;
         float closestDistance = Mathf.Infinity;
 
@@ -127,12 +161,14 @@ public class Tower : MonoBehaviour
         }
 
         attackTimer -= Time.deltaTime;
+
         if (attackTimer > 0f)
         {
             return;
         }
 
         Enemy targetEnemy = closestEnemy.GetComponent<Enemy>();
+
         if (targetEnemy != null)
         {
             if (splashRadius > 0f)
@@ -153,7 +189,9 @@ public class Tower : MonoBehaviour
                 Quaternion.identity
             );
 
-            Projectile projectileScript = projectile.GetComponent<Projectile>();
+            Projectile projectileScript =
+                projectile.GetComponent<Projectile>();
+
             if (projectileScript != null)
             {
                 projectileScript.SetTarget(closestEnemy.transform);
@@ -165,12 +203,15 @@ public class Tower : MonoBehaviour
 
     private void DamageEnemiesAround(Vector3 center)
     {
-        foreach (GameObject target in GameObject.FindGameObjectsWithTag("Enemy"))
+        foreach (GameObject target in
+                 GameObject.FindGameObjectsWithTag("Enemy"))
         {
             if (target != null &&
-                Vector2.Distance(center, target.transform.position) <= splashRadius)
+                Vector2.Distance(center, target.transform.position)
+                <= splashRadius)
             {
                 Enemy enemy = target.GetComponent<Enemy>();
+
                 if (enemy != null)
                 {
                     enemy.TakeDamage(damage);

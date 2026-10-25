@@ -1355,6 +1355,8 @@ MonoBehaviour:
   currentWave: 1
   enemiesRemaining: 0
   enemySpawner: {fileID: 1130299109}
+  intermissionDuration: 10
+  earlyStartBonus: 20
 --- !u!4 &388960845
 Transform:
   m_ObjectHideFlags: 0
@@ -6012,6 +6014,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607498846}
   m_CullTransparentMesh: 1
+--- !u!114 &1800000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293198063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8035043bf3d7f4087d861c81ff5cba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CurrencyManager
+  startingCurrency: 200
+--- !u!114 &1800000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293198063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e1a52240c0345e6b51989c5733ba73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerManager
+  basicTowerPrefab: {fileID: 1262625237871090779, guid: a07a75d6558bc479981e005032cd44c8, type: 3}
+  pathManager: {fileID: 100202477}
+--- !u!114 &1800000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293198063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d8c4ce874f746d7ae13d19d77e86021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerShop
+  towerManager: {fileID: 1800000001}
+  pathManager: {fileID: 100202477}
+  waveManager: {fileID: 388960844}
+  playerHealth: {fileID: 1453630417}
 --- !u!1 &1973721256
 GameObject:
   m_ObjectHideFlags: 0
@@ -6629,6 +6674,14 @@ PrefabInstance:
       propertyPath: shootSound
       value: 
       objectReference: {fileID: 8300000, guid: 295bfd82c45fc41ec89a71375d627427, type: 3}
+    - target: {fileID: 7752503059307335524, guid: a07a75d6558bc479981e005032cd44c8, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 4369928390808404936, guid: 074d13b6a59cd472f8ae216a1ded5e49, type: 3}
+    - target: {fileID: 7752503059307335524, guid: a07a75d6558bc479981e005032cd44c8, type: 3}
+      propertyPath: firingEffectPrefab
+      value: 
+      objectReference: {fileID: 2493738321927519606, guid: b24ded285a6e04e8299566081c8e2f9b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
