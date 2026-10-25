@@ -164,11 +164,6 @@ public class Enemy : MonoBehaviour
         hasBeenRemoved = false;
     }
 
-    public void LoadSaveData(EnemySaveData data)
-    {
-        LoadSaveData(data, waveManager != null ? waveManager.currentWave : 1);
-    }
-
     void Update()
     {
         if (hasBeenRemoved || path == null || path.Count == 0)
