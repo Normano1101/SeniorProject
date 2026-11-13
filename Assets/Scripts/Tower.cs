@@ -28,6 +28,9 @@ public class Tower : MonoBehaviour
     public int damage = 10;
     public GameObject projectilePrefab;
 
+    [Header("Obstacle Detection")]
+    [SerializeField] private LayerMask obstacleLayer;
+
     // Tower health
     public int maxHealth = 100;
     public int currentHealth = 100;
@@ -133,6 +136,27 @@ public class Tower : MonoBehaviour
         };
     }
 
+    // Check if a rock or obstacle blocks the tower's view
+    private bool HasLineOfSight(Transform target)
+    {
+        Vector2 direction =
+            (Vector2)(target.position - transform.position);
+
+        float distance = direction.magnitude;
+
+        if (distance <= 0f)
+            return true;
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            transform.position,
+            direction.normalized,
+            distance,
+            obstacleLayer
+        );
+
+        return hit.collider == null;
+    }
+
     void Update()
     {
         GameObject[] enemies =
@@ -148,7 +172,10 @@ public class Tower : MonoBehaviour
                 enemy.transform.position
             );
 
-            if (distance <= range && distance < closestDistance)
+            // Enemy must be within range and not behind a rock
+            if (distance <= range &&
+                distance < closestDistance &&
+                HasLineOfSight(enemy.transform))
             {
                 closestEnemy = enemy;
                 closestDistance = distance;
@@ -167,13 +194,16 @@ public class Tower : MonoBehaviour
             return;
         }
 
-        Enemy targetEnemy = closestEnemy.GetComponent<Enemy>();
+        Enemy targetEnemy =
+            closestEnemy.GetComponent<Enemy>();
 
         if (targetEnemy != null)
         {
             if (splashRadius > 0f)
             {
-                DamageEnemiesAround(closestEnemy.transform.position);
+                DamageEnemiesAround(
+                    closestEnemy.transform.position
+                );
             }
             else
             {
@@ -194,7 +224,9 @@ public class Tower : MonoBehaviour
 
             if (projectileScript != null)
             {
-                projectileScript.SetTarget(closestEnemy.transform);
+                projectileScript.SetTarget(
+                    closestEnemy.transform
+                );
             }
         }
 
@@ -207,10 +239,13 @@ public class Tower : MonoBehaviour
                  GameObject.FindGameObjectsWithTag("Enemy"))
         {
             if (target != null &&
-                Vector2.Distance(center, target.transform.position)
-                <= splashRadius)
+                Vector2.Distance(
+                    center,
+                    target.transform.position
+                ) <= splashRadius)
             {
-                Enemy enemy = target.GetComponent<Enemy>();
+                Enemy enemy =
+                    target.GetComponent<Enemy>();
 
                 if (enemy != null)
                 {
