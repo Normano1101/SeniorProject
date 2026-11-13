@@ -47,6 +47,10 @@ public class Enemy : MonoBehaviour
     private bool hasBeenRemoved;
     private SpriteRenderer spriteRenderer;
 
+    // Enemy health bar system
+    private EnemyHealthBar healthBar;
+    private int maxHealth;
+
     private Tower targetTower;
     private float towerAttackTimer;
     private Vector3 towerApproachPosition;
@@ -55,6 +59,14 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Find the health bar attached to this enemy.
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+
+        maxHealth = health;
+
+        if (healthBar != null)
+            healthBar.SetMaxHealth(maxHealth);
     }
 
     public void Configure(EnemyKind kind, int wave)
@@ -110,6 +122,13 @@ public class Enemy : MonoBehaviour
                     spriteRenderer.color = Color.white;
                 break;
         }
+
+        // Update maximum health for this enemy type.
+        maxHealth = health;
+
+        // Make the health bar start completely full.
+        if (healthBar != null)
+            healthBar.SetMaxHealth(maxHealth);
     }
 
     public void SetPath(List<Vector3> newPath)
@@ -148,6 +167,10 @@ public class Enemy : MonoBehaviour
 
         Configure(savedKind, wave);
         health = Mathf.Max(1, data.health);
+
+        // Restore the correct health bar value.
+        if (healthBar != null)
+            healthBar.SetHealth(health);
 
         transform.position = new Vector3(
             data.x,
@@ -303,6 +326,10 @@ public class Enemy : MonoBehaviour
 
         health = Mathf.Max(0, health - damage);
 
+        // Update the visible health bar whenever damaged.
+        if (healthBar != null)
+            healthBar.SetHealth(health);
+
         if (health <= 0)
             RemoveEnemy(wasKilled: true);
     }
@@ -320,6 +347,8 @@ public class Enemy : MonoBehaviour
         if (waveManager != null)
             waveManager.EnemyRemoved();
 
+        // The health bar is a child of the enemy,
+        // so it disappears automatically.
         Destroy(gameObject);
     }
 }

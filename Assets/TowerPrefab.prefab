@@ -105,7 +105,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efbb18dd74e01422ea08c318bb17f0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
+  cost: 100
+  towerType: BasicTower
+  level: 1
   range: 5
   attackSpeed: 1
   damage: 15
   projectilePrefab: {fileID: 4369928390808404936, guid: 074d13b6a59cd472f8ae216a1ded5e49, type: 3}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  maxHealth: 100
+  currentHealth: 100
