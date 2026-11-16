@@ -36,10 +36,17 @@ public class EnemySpawner : MonoBehaviour
 
     public bool HasValidPath => path != null && path.Count > 1;
 
-    public void PrepareWave(int wave)
+    public void PrepareWave(int wave, float difficulty = 1f)
     {
-        enemiesToSpawn =
-            baseEnemiesToSpawn + Mathf.Max(0, wave - 1) * 2;
+        enemiesToSpawn = CalculateEnemyCount(wave, difficulty);
+    }
+
+    // Original progression (base + 2 per wave) scaled by the AI difficulty.
+    // Difficulty 1.0 gives exactly the original count.
+    public int CalculateEnemyCount(int wave, float difficulty)
+    {
+        int baseCount = baseEnemiesToSpawn + Mathf.Max(0, wave - 1) * 2;
+        return Mathf.Max(1, Mathf.RoundToInt(baseCount * difficulty));
     }
 
     public IEnumerator SpawnWave()

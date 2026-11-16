@@ -206,8 +206,12 @@ public class TowerShop : MonoBehaviour
                 "Start next wave early (+$20)"
             ))
             {
+                // Check before calling: starting the wave ends the intermission.
+                bool bonus = waveManager.EarlyStartEligible;
                 waveManager.StartNextWaveEarly();
-                message = "Early start bonus earned.";
+                message = bonus
+                    ? "Early start bonus earned."
+                    : "Wave started early (too late for bonus).";
             }
         }
         else if (waveManager != null)

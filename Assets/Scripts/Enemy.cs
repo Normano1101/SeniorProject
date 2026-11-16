@@ -345,7 +345,11 @@ public class Enemy : MonoBehaviour
             CurrencyManager.Instance.AddCurrency(currencyReward);
 
         if (waveManager != null)
-            waveManager.EnemyRemoved();
+        {
+            // hasBeenRemoved above guarantees this runs once per enemy,
+            // so each enemy is counted as exactly one kill or one leak.
+            waveManager.EnemyRemoved(wasKilled);
+        }
 
         // The health bar is a child of the enemy,
         // so it disappears automatically.

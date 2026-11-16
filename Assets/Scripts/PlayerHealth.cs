@@ -13,6 +13,9 @@ public class PlayerHealth : MonoBehaviour
     [Header("Game Over")]
     [SerializeField] private GameManager gameManager;
 
+    // Raised with the amount of health actually lost. Used by WaveManager.
+    public event System.Action<int> HealthLost;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -30,8 +33,14 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
+        int healthBefore = currentHealth;
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        // Report only the health actually lost (overkill damage is ignored)
+        // so the difficulty director gets accurate numbers.
+        HealthLost?.Invoke(healthBefore - currentHealth);
 
         UpdateHealthUI();
         Debug.Log("CURRENT HEALTH: " + currentHealth);
