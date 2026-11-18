@@ -3,7 +3,7 @@ const db = require("./database");
 
 const app = express();
 const PORT = 3000;
-const allowedEnemyTypes = new Set(["Basic", "Runner", "Heavy"]);
+const allowedEnemyTypes = new Set(["Basic", "Runner", "Heavy", "TowerAttacker"]);
 const allowedTowerTypes = new Set(["BasicTower", "RapidTower", "CannonTower"]);
 
 // Allow API to receive JSON
