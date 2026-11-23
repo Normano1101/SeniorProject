@@ -1356,6 +1356,25 @@ MonoBehaviour:
   enemySpawner: {fileID: 1130299109}
   intermissionDuration: 10
   earlyStartBonus: 20
+  playerHealth: {fileID: 0}
+  difficultyDirector:
+    startDifficulty: 1
+    minimumDifficulty: 0.9
+    maximumDifficulty: 2.5
+    excellentIncrease: 0.03
+    goodIncrease: 0.02
+    poorDecrease: 0.02
+    maxIncreasePerWave: 0.25
+    maxDecreasePerWave: 0.03
+    excellentThreshold: 0.7
+    goodThreshold: 0.2
+    poorThreshold: 0.2
+    positiveSmoothing: 0.85
+    negativeSmoothing: 0.35
+    targetKillRate: 0.9
+    targetHealthLostFraction: 0.1
+    killWeight: 0.5
+    healthWeight: 0.5
 --- !u!4 &388960845
 Transform:
   m_ObjectHideFlags: 0
@@ -5524,6 +5543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefab: {fileID: 6051342193424275891, guid: ba0a8bba0909442c48bd5dd9903d5d75, type: 3}
+  blackEnemyPrefab: {fileID: 3322073909965316914, guid: 1dd15fb51262c42b4aa4798b11416216, type: 3}
   pathManager: {fileID: 100202477}
   waveManager: {fileID: 388960844}
   spawnInterval: 2

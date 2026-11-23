@@ -194,23 +194,6 @@ public class Tower : MonoBehaviour
             return;
         }
 
-        Enemy targetEnemy =
-            closestEnemy.GetComponent<Enemy>();
-
-        if (targetEnemy != null)
-        {
-            if (splashRadius > 0f)
-            {
-                DamageEnemiesAround(
-                    closestEnemy.transform.position
-                );
-            }
-            else
-            {
-                targetEnemy.TakeDamage(damage);
-            }
-        }
-
         if (projectilePrefab != null)
         {
             GameObject projectile = Instantiate(
@@ -225,7 +208,9 @@ public class Tower : MonoBehaviour
             if (projectileScript != null)
             {
                 projectileScript.SetTarget(
-                    closestEnemy.transform
+                    closestEnemy.transform,
+                    damage,
+                    splashRadius
                 );
             }
         }

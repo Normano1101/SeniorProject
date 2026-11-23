@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    public GameObject blackEnemyPrefab;
     public PathManager pathManager;
     public WaveManager waveManager;
 
@@ -111,8 +112,18 @@ public class EnemySpawner : MonoBehaviour
             return false;
         }
 
+        // Randomly choose the Black Pawn for Basic enemies.
+        GameObject prefabToSpawn = enemyPrefab;
+
+        if (kind == EnemyKind.Basic &&
+            blackEnemyPrefab != null &&
+            Random.value < 0.5f)
+        {
+            prefabToSpawn = blackEnemyPrefab;
+        }
+
         GameObject newEnemy = Instantiate(
-            enemyPrefab,
+            prefabToSpawn,
             path[0],
             Quaternion.identity
         );
